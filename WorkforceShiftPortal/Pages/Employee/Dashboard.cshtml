@@ -1,0 +1,653 @@
+﻿@page
+@model WorkforceShiftPorta.Pages.Employee.DashboardModel
+@{
+    ViewData["Title"] = "Employee Dashboard";
+    var daysInMonth = DateTime.DaysInMonth(Model.CurrentYear, Model.CurrentMonth);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --info-color: #4895ef;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* Header Styles */
+        .welcome-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .welcome-header h4 {
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        /* Profile Card */
+        /* Modern Profile Section Styles */
+.profile-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 1.5rem;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4361ee, #3a0ca3, #7209b7);
+    border-radius: 20px 20px 0 0;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.profile-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.profile-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.profile-title h3 {
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.profile-title p {
+    color: #64748b;
+    margin: 0.25rem 0 0 0;
+    font-size: 0.9rem;
+}
+
+.profile-actions {
+    margin-left: auto;
+}
+
+.btn-edit {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border: none;
+    border-radius: 12px;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+/* Profile Grid */
+.profile-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.profile-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 1.25rem;
+    border-radius: 16px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: rgba(67, 97, 238, 0.3);
+}
+
+.profile-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 180px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.profile-label i {
+    width: 20px;
+    text-align: center;
+    color: #4361ee;
+    font-size: 1.1rem;
+}
+
+.profile-value {
+    flex: 1;
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 1.1rem;
+}
+
+.email-link {
+    color: #4361ee;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.email-link:hover {
+    color: #3a0ca3;
+    transform: translateX(4px);
+}
+
+.department-badge {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Profile Decorations */
+.profile-decoration {
+    position: absolute;
+    right: 1rem;
+    opacity: 0.1;
+}
+
+.decoration-dot {
+    width: 40px;
+    height: 40px;
+    background: #4361ee;
+    border-radius: 50%;
+}
+
+.decoration-wave {
+    width: 50px;
+    height: 20px;
+    background: #4361ee;
+    border-radius: 10px;
+    position: relative;
+}
+
+.decoration-wave::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: inherit;
+    border-radius: 5px;
+    opacity: 0.7;
+}
+
+.decoration-bar {
+    width: 60px;
+    height: 8px;
+    background: #4361ee;
+    border-radius: 4px;
+}
+
+/* Profile Footer */
+.profile-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    position: relative;
+}
+
+.status-dot.active::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.3);
+    top: -4px;
+    left: -4px;
+    animation: pulse 2s infinite;
+}
+
+.last-updated {
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
+
+        
+        /* Calendar Section */
+        .calendar-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .calendar-header h5 {
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+        
+        .month-navigation {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn-nav {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-nav:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .calendar-day-header {
+            background: linear-gradient(135deg, #374151, #4b5563);
+            color: white;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .calendar-day {
+            background: white;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .calendar-day:hover {
+            background: #f7fafc;
+            transform: scale(1.02);
+        }
+        
+        .day-number {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .shift-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
+        .badge-day {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .badge-night {
+            background: linear-gradient(135deg, #1f2937, #374151);
+            color: white;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-weight: 600;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="dashboard-container">
+            <!-- Welcome Header -->
+            <div class="welcome-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4>Welcome back, @Model.EmployeeName!</h4>
+                        <p class="mb-0 opacity-75">Here's your schedule and profile information</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="bi bi-calendar-month stat-icon text-primary"></i>
+                    <div class="stat-value">@Model.Shifts.Count(s => s.ShiftType == "Day")</div>
+                    <div class="stat-label">Day Shifts</div>
+                </div>
+                <div class="stat-card">
+                    <i class="bi bi-moon stat-icon text-dark"></i>
+                    <div class="stat-value">@Model.Shifts.Count(s => s.ShiftType == "Night")</div>
+                    <div class="stat-label">Night Shifts</div>
+                </div>
+                <div class="stat-card">
+                    <i class="bi bi-clock-history stat-icon text-warning"></i>
+                    <div class="stat-value">@Model.Shifts.Count</div>
+                    <div class="stat-label">Total Shifts</div>
+                </div>
+            </div>
+
+            <!-- Profile Information -->
+            <div class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <div class="profile-title">
+                        <h3>Profile Information</h3>
+                        <p>Employee details and department information</p>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn-edit">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <div class="profile-label">
+                            <i class="bi bi-person-circle"></i>
+                            <span>Full Name</span>
+                        </div>
+                        <div class="profile-value">
+                            @Model.EmployeeName
+                        </div>
+                        <div class="profile-decoration">
+                            <div class="decoration-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-item">
+                        <div class="profile-label">
+                            <i class="bi bi-envelope"></i>
+                            <span>Email Address</span>
+                        </div>
+                        <div class="profile-value">
+                            <a href="mailto:@Model.EmployeeEmail" class="email-link">
+                                @Model.EmployeeEmail
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        </div>
+                        <div class="profile-decoration">
+                            <div class="decoration-wave"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-item">
+                        <div class="profile-label">
+                            <i class="bi bi-building"></i>
+                            <span>Department</span>
+                        </div>
+                        <div class="profile-value">
+                            <span class="department-badge">@Model.DepartmentName</span>
+                        </div>
+                        <div class="profile-decoration">
+                            <div class="decoration-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-footer">
+                    <div class="status-indicator">
+                        <div class="status-dot active"></div>
+                        <span>Active Employee</span>
+                    </div>
+                    <div class="last-updated">
+                        Updated just now
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Section -->
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h5>
+                        <i class="bi bi-calendar3 me-2 text-primary"></i>
+                        Schedule for @Model.CurrentMonthName @Model.CurrentYear
+                    </h5>
+                </div>
+
+                @if (Model.Shifts.Any())
+                {
+                    <div class="calendar-grid">
+                        <!-- Day Headers -->
+                        @{
+                            var dayHeaders = new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+                        }
+                        @foreach (var dayHeader in dayHeaders)
+                        {
+                            <div class="calendar-day-header">@dayHeader</div>
+                        }
+
+                        <!-- Calendar Days -->
+                        @{
+                            var firstDayOfMonth = new DateTime(Model.CurrentYear, Model.CurrentMonth, 1);
+                            var startingDay = (int)firstDayOfMonth.DayOfWeek;
+                            
+                            // Empty cells for days before the first day of month
+                            for (int i = 0; i < startingDay; i++)
+                            {
+                                <div class="calendar-day" style="background: #f8fafc;"></div>
+                            }
+
+                            // Days of the month
+                            for (int day = 1; day <= daysInMonth; day++)
+                            {
+                                var shift = Model.Shifts.FirstOrDefault(s => s.Date.Day == day);
+                                <div class="calendar-day">
+                                    <div class="day-number">@day</div>
+                                    @if (shift != null)
+                                    {
+                                        if (shift.ShiftType == "Day")
+                                        {
+                                            <span class="shift-badge badge-day">Day</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="shift-badge badge-night">Night</span>
+                                        }
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <h5>No Shifts Assigned</h5>
+                        <p class="mb-0">You don't have any shifts scheduled for this month yet.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        
+            const calendarDays = document.querySelectorAll('.calendar-day');
+            calendarDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    const dayNumber = this.querySelector('.day-number').textContent;
+                    const shiftBadge = this.querySelector('.shift-badge');
+                    if (shiftBadge) {
+                        const shiftType = shiftBadge.textContent;
+                        alert(`Day ${dayNumber}: ${shiftType} Shift`);
+                    } else {
+                        alert(`Day ${dayNumber}: No shift assigned`);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

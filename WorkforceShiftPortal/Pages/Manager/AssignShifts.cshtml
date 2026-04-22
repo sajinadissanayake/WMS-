@@ -1,0 +1,472 @@
+﻿@page
+@model WorkforceShiftPorta.Pages.Manager.AssignShiftsModel
+@{
+    ViewData["Title"] = "Assign Daily Shifts";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #06b6d4;
+            --light-bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 2rem 1rem;
+        }
+
+            .page-header h2 {
+                font-weight: 700;
+                margin: 0;
+            }
+
+        /* Form Card */
+        .form-card {
+            padding: 2rem;
+        }
+
+        .form-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-select, .form-control {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+            .form-select:focus, .form-control:focus {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            }
+
+        /* Table Styles */
+        .shifts-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+            .table-header h4 {
+                font-weight: 700;
+                color: #2d3748;
+                margin: 0;
+            }
+
+        .month-display {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .calendar-table thead th {
+                background: linear-gradient(135deg, #374151, #4b5563);
+                color: white;
+                padding: 1rem 0.5rem;
+                text-align: center;
+                font-weight: 600;
+                font-size: 0.9rem;
+                border: 1px solid #4b5563;
+            }
+
+            .calendar-table tbody td {
+                background: white;
+                padding: 0.75rem 0.5rem;
+                text-align: center;
+                border: 1px solid #e2e8f0;
+                transition: all 0.2s ease;
+            }
+
+                .calendar-table tbody td:hover {
+                    background: #f7fafc;
+                }
+
+        .day-shift-select {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            width: 100%;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+            .day-shift-select:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+            }
+
+        /* Shift display styles */
+        .shift-display {
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .shift-day {
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .shift-night {
+            background: linear-gradient(135deg, #1e293b, #374151);
+            color: white;
+            border: 1px solid #374151;
+        }
+
+        .shift-empty {
+            background: #f8fafc;
+            color: #6b7280;
+            border: 1px dashed #d1d5db;
+            font-style: italic;
+        }
+
+        /* Button Styles */
+        .btn-cancel {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+            .btn-cancel:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+                color: white;
+            }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                color: white;
+            }
+
+        /* Alert Styles */
+        .alert-info-custom {
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            border: none;
+            border-radius: 10px;
+            color: #1e40af;
+            border-left: 4px solid var(--info-color);
+            padding: 1rem 1.5rem;
+        }
+
+        /* View mode toggle */
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-toggle-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .view-toggle-btn.active {
+                background: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="main-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2>
+                            <i class="bi bi-calendar-plus me-2"></i>Assign Daily Shifts
+                        </h2>
+                        <p class="mb-0 opacity-75">Manage shift assignments for your team members</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-card">
+                <form method="post" id="shiftForm">
+                    <!-- Employee and Month Selection -->
+                    <div class="form-section">
+                        <h5 class="fw-bold mb-3 text-primary">
+                            <i class="bi bi-sliders me-2"></i>Selection Criteria
+                        </h5>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <label class="form-label">Select Employee</label>
+                                <select asp-for="SelectedEmployeeId" class="form-select" id="employeeSelect" required>
+                                    <option value="">-- Select Employee --</option>
+                                    @foreach (var emp in Model.Employees)
+                                    {
+                                        <option value="@emp.Id" selected="@(Model.SelectedEmployeeId == emp.Id)">
+                                            @emp.Name
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Month</label>
+                                <select asp-for="SelectedMonth" class="form-select" id="monthSelect">
+                                    @for (int m = 1; m <= 12; m++)
+                                    {
+                                        <option value="@m" selected="@(Model.SelectedMonth == m)">
+                                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Year</label>
+                                <input asp-for="SelectedYear" type="number" min="2023" max="2100" class="form-control" id="yearInput" />
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" name="action" value="load" class="btn btn-primary">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Load Shifts
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Daily Shifts Table -->
+                    <div class="shifts-table-container">
+                        <div class="table-header">
+                            <h4>
+                                <i class="bi bi-calendar-week me-2"></i>Daily Shift Assignments
+                            </h4>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="view-toggle">
+                                    <button type="button" class="view-toggle-btn active" data-view="edit">
+                                        <i class="bi bi-pencil me-1"></i>Edit
+                                    </button>
+                                    <button type="button" class="view-toggle-btn" data-view="view">
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </button>
+                                </div>
+                                <div class="month-display">
+                                    @(new DateTime(Model.SelectedYear, Model.SelectedMonth, 1).ToString("MMMM yyyy"))
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="calendar-table">
+                                <thead>
+                                    <tr>
+                                        @for (int day = 1; day <= Model.DaysInMonth; day++)
+                                        {
+                                            <th>@day</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        @for (int day = 1; day <= Model.DaysInMonth; day++)
+                                        {
+                                            <td class="shift-cell" data-day="@day">
+                                                @{
+                                                    var shiftValue = Model.DailyShifts != null && Model.DailyShifts.ContainsKey(day)
+                                                    ? Model.DailyShifts[day]
+                                                    : "";
+                                                }
+
+                                                <!-- Edit Mode: Dropdown -->
+                                                <select name="DailyShifts[@day]" class="day-shift-select edit-mode">
+                                                    <option value="">--</option>
+                                                    <option value="Day" selected="@(shiftValue == "Day")">Day</option>
+                                                    <option value="Night" selected="@(shiftValue == "Night")">Night</option>
+                                                </select>
+
+                                                <!-- View Mode: Display -->
+                                                <div class="shift-display view-mode d-none">
+                                                    @if (shiftValue == "Day")
+                                                    {
+                                                        <span class="shift-day">Day</span>
+                                                    }
+                                                    else if (shiftValue == "Night")
+                                                    {
+                                                        <span class="shift-night">Night</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="shift-empty">Not Set</span>
+                                                    }
+                                                </div>
+                                            </td>
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <a asp-page="Dashboard" class="btn btn-cancel">
+                            <i class="bi bi-x-circle me-2"></i> Cancel
+                        </a>
+                        <button type="submit" name="action" value="assign" class="btn btn-submit">
+                            <i class="bi bi-plus-circle me-2"></i> Assign Shifts
+                        </button>
+                    </div>
+
+                    <!-- Feedback Message -->
+                    @if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        <div class="alert alert-info-custom mt-4 d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill me-3 fs-5"></i>
+                            <div class="fw-medium">@Model.Message</div>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // View mode toggle functionality
+            const viewToggleBtns = document.querySelectorAll('.view-toggle-btn');
+            const shiftCells = document.querySelectorAll('.shift-cell');
+
+            viewToggleBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const view = this.getAttribute('data-view');
+
+                    // Update active button
+                    viewToggleBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Toggle view/edit modes
+                    shiftCells.forEach(cell => {
+                        const editMode = cell.querySelector('.edit-mode');
+                        const viewMode = cell.querySelector('.view-mode');
+
+                        if (view === 'view') {
+                            editMode.classList.add('d-none');
+                            viewMode.classList.remove('d-none');
+                        } else {
+                            editMode.classList.remove('d-none');
+                            viewMode.classList.add('d-none');
+                        }
+                    });
+                });
+            });
+
+            // Auto-submit form when employee, month, or year changes for loading shifts
+            const employeeSelect = document.getElementById('employeeSelect');
+            const monthSelect = document.getElementById('monthSelect');
+            const yearInput = document.getElementById('yearInput');
+
+            [employeeSelect, monthSelect, yearInput].forEach(element => {
+                element.addEventListener('change', function () {
+                    // Create a hidden input to trigger load action
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'action';
+                    hiddenInput.value = 'load';
+                    document.getElementById('shiftForm').appendChild(hiddenInput);
+
+                    // Submit the form
+                    document.getElementById('shiftForm').submit();
+                });
+            });
+
+            // Add focus effects to form selects
+            const formSelects = document.querySelectorAll('.form-select, .day-shift-select');
+            formSelects.forEach(select => {
+                select.addEventListener('focus', function () {
+                    this.parentElement.style.transform = 'scale(1.02)';
+                    this.parentElement.style.transition = 'transform 0.2s ease';
+                });
+
+                select.addEventListener('blur', function () {
+                    this.parentElement.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

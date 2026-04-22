@@ -1,0 +1,377 @@
+﻿@page
+@model WorkforceShiftPorta.Pages.Admin.AssignManagersModel
+@{
+    ViewData["Title"] = "Assign Managers";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --info-color: #4895ef;
+            --light-bg: #f8f9fa;
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 70px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .sidebar.collapsed .sidebar-header h3 {
+            display: none;
+        }
+        
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        .sidebar-menu {
+            padding: 1rem 0;
+            list-style: none;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 0.8rem;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .sidebar.collapsed .sidebar-menu span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .sidebar-menu a {
+            justify-content: center;
+            padding: 0.8rem 0;
+        }
+        
+        .sidebar.collapsed .sidebar-menu i {
+            margin-right: 0;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        /* Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .page-header h2 {
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Form Card Styles */
+        .form-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .form-card .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            padding: 1.5rem;
+        }
+        
+        .form-card .card-body {
+            padding: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-select, .form-control {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        }
+        
+        /* Button Styles */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-success-custom {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Alert Styles */
+        .alert-info-custom {
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            border: none;
+            border-radius: 8px;
+            color: #1e40af;
+            border-left: 4px solid var(--info-color);
+        }
+       
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>WorkShift Portal</h3>
+            <button class="toggle-btn" id="toggleSidebar">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a asp-page="/Admin/Dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a asp-page="/Admin/ManageUsers">
+                    <i class="bi bi-people"></i>
+                    <span>Manage Users</span>
+                </a>
+            </li>
+            <li>
+                <a class="active" asp-page="/Admin/AssignManagers">
+                    <i class="bi bi-person-badge"></i>
+                    <span>Assign Managers</span>
+                </a>
+            </li>
+            <li>
+                <a asp-page="/Admin/ManageDepartment">
+                    <i class="bi bi-building"></i>
+                    <span>Manage Departments</span>
+                </a>
+            </li>
+            <li>
+                <a asp-page="/Admin/Reports">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>View Reports</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="page-header">
+            <h2>Assign Managers</h2>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div>
+                    <div class="fw-bold">Admin User</div>
+                    <small class="text-muted">Administrator</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h4 class="mb-0 text-white">
+                            <i class="bi bi-person-badge me-2"></i>Assign Manager to Department
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">Select Department</label>
+                                    <select asp-for="SelectedDepartmentId" class="form-select" required>
+                                        <option value="">-- Select Department --</option>
+                                        @foreach (var dept in Model.Departments)
+                                        {
+                                            <option value="@dept.Id" selected="@(Model.SelectedDepartmentId == dept.Id)">
+                                                @dept.Name
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="form-text">Choose the department to assign a manager</div>
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">Select Manager</label>
+                                    <select asp-for="SelectedManagerId" class="form-select" required>
+                                        <option value="">-- Select Manager --</option>
+                                        @foreach (var manager in Model.Managers)
+                                        {
+                                            <option value="@manager.Id" selected="@(Model.SelectedManagerId == manager.Id)">
+                                                @manager.Name
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="form-text">Choose a manager to assign to the department</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                <a asp-page="Dashboard" class="btn btn-secondary px-4">
+                                    <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+                                </a>
+                                <button type="submit" class="btn btn-success-custom text-white px-4">
+                                    <i class="bi bi-person-check me-2"></i> Assign Manager
+                                </button>
+                            </div>
+                        </form>
+
+                        @if (!string.IsNullOrEmpty(Model.Message))
+                        {
+                            <div class="alert alert-info-custom mt-4 d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill me-3 fs-5"></i>
+                                <div>@Model.Message</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+    </script>
+</body>
+</html>

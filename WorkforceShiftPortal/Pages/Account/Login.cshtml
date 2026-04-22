@@ -1,0 +1,40 @@
+﻿@page
+@model WorkforceShiftPortal.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card shadow-lg border-0" style="width: 400px; border-radius: 15px;">
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <img src="~/images/logo.png" alt="Company Logo" style="width: 80px;" />
+                <h3 class="mt-2">Workforce Portal</h3>
+                <p class="text-muted">Sign in to continue</p>
+            </div>
+
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="Email" class="form-control form-control-lg" placeholder="Enter your email" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Password</label>
+                    <input type="password" name="Password" class="form-control form-control-lg" placeholder="Enter your password" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">Login</button>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-3">@Model.ErrorMessage</div>
+                }
+            </form>
+
+            <div class="text-center mt-4">
+                <small class="text-muted">© @DateTime.Now.Year WorkforceShift Portal</small>
+            </div>
+        </div>
+    </div>
+</div>

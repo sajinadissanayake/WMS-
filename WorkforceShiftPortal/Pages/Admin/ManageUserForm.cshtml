@@ -1,0 +1,68 @@
+﻿@page "{action?}/{id?}"
+@model WorkforceShiftPortal.Pages.Admin.ManageUserFormModel
+@{
+    ViewData["Title"] = Model.ActionType + " User";
+}
+
+<div class="container py-5 bg-light" style="min-height: 100vh;">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@Model.ActionType User</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="AppUser.Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="AppUser.Name" class="form-label fw-bold">Full Name</label>
+                            <input asp-for="AppUser.Name" class="form-control" placeholder="Enter full name" required />
+                            <span asp-validation-for="AppUser.Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AppUser.Email" class="form-label fw-bold">Email Address</label>
+                            <input asp-for="AppUser.Email" type="email" class="form-control" placeholder="Enter email" required />
+                            <span asp-validation-for="AppUser.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AppUser.Password" class="form-label fw-bold">Password</label>
+                            <input asp-for="AppUser.Password" type="password" class="form-control" placeholder="Enter password" required />
+                            <span asp-validation-for="AppUser.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AppUser.Role" class="form-label fw-bold">Role</label>
+                            <select asp-for="AppUser.Role" class="form-select">
+                                <option value="">-- Select Role --</option>
+                                <option value="Admin" selected="@Model.AppUser.Role == " Admin"">Admin</option>
+                                <option value="Manager" selected="@Model.AppUser.Role == " Manager"">Manager</option>
+                                <option value="Employee" selected="@Model.AppUser.Role == " Employee"">Employee</option>
+                            </select>
+                            <span asp-validation-for="AppUser.Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AppUser.DepartmentId" class="form-label fw-bold">Department</label>
+                            <select asp-for="AppUser.DepartmentId" class="form-select" asp-items="Model.DepartmentList">
+                                <option value="">-- Select Department --</option>
+                            </select>
+                            <span asp-validation-for="AppUser.DepartmentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-page="ManageUsers" class="btn btn-secondary px-4">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-save"></i> Save User
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

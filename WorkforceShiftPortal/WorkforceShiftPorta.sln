@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkforceShiftPortal", "WorkforceShiftPortal.csproj", "{4608E720-D701-4EFF-901C-C5A4EF6A240F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4608E720-D701-4EFF-901C-C5A4EF6A240F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4608E720-D701-4EFF-901C-C5A4EF6A240F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4608E720-D701-4EFF-901C-C5A4EF6A240F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4608E720-D701-4EFF-901C-C5A4EF6A240F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {383444F9-50D9-4EFA-8802-9A91663EC626}
+	EndGlobalSection
+EndGlobal
